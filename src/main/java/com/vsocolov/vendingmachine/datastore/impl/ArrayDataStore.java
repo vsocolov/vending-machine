@@ -26,7 +26,7 @@ public class ArrayDataStore implements DataStore {
      * @return a filled array with default products
      */
     private Product[] fillDataSource(final int capacity) {
-        return IntStream.rangeClosed(0, capacity)
+        return IntStream.range(0, capacity)
                 .mapToObj(Product::new)
                 .toArray(Product[]::new);
     }

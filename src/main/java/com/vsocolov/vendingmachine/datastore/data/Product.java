@@ -16,7 +16,7 @@ public class Product implements Serializable {
 
     public Product(int id) {
         this.id = id;
-        this.name = RandomStringUtils.random(DEFAULT_PRODUCT_NAME_SIZE);
+        this.name = RandomStringUtils.random(DEFAULT_PRODUCT_NAME_SIZE, true, false);
         this.price = DEFAULT_PRICE;
         this.quantity = DEFAULT_QUANTITY;
     }
