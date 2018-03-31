@@ -1,4 +1,4 @@
-package com.vsocolov.vendingmachine.api;
+package com.vsocolov.vendingmachine;
 
 public interface VendingMachineConsumer {
 }

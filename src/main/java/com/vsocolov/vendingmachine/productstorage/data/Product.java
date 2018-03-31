@@ -1,4 +1,4 @@
-package com.vsocolov.vendingmachine.productstore.data;
+package com.vsocolov.vendingmachine.productstorage.data;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

@@ -1,4 +1,4 @@
-package com.vsocolov.vendingmachine.api;
+package com.vsocolov.vendingmachine;
 
 import com.vsocolov.vendingmachine.enums.Coin;
 

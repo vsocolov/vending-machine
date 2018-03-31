@@ -1,7 +1,7 @@
 package com.vsocolov.vendingmachine;
 
-import com.vsocolov.vendingmachine.productstore.ProductStore;
-import com.vsocolov.vendingmachine.productstore.data.Product;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
+import com.vsocolov.vendingmachine.productstorage.data.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,13 +18,13 @@ public class VendingMachineTest {
 
     private VendingMachine vendingMachine;
 
-    private ProductStore productStore;
+    private ProductStorage productStorage;
 
     @Before
     public void setUp() {
         this.vendingMachine = new VendingMachine(5, Arrays.asList(ONE_PENNY, FIVE_PENCE, TEN_PENCE));
-        this.productStore = mock(ProductStore.class);
-        ReflectionTestUtils.setField(vendingMachine, "productStore", productStore);
+        this.productStorage = mock(ProductStorage.class);
+        ReflectionTestUtils.setField(vendingMachine, "productStorage", productStorage);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
 
         assertThat(vendingMachine.getQuantity(productId), equalTo(product.getQuantity()));
     }
@@ -42,14 +42,14 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
         final ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        doReturn(product).when(productStore).saveProduct(productCaptor.capture());
+        doReturn(product).when(productStorage).saveProduct(productCaptor.capture());
 
         vendingMachine.setQuantity(productId, 55);
 
         final Product forUpdate = productCaptor.getValue();
-        verify(productStore).saveProduct(forUpdate);
+        verify(productStorage).saveProduct(forUpdate);
         assertThat(forUpdate.getName(), equalTo(product.getName()));
         assertThat(forUpdate.getId(), equalTo(product.getId()));
         assertThat(forUpdate.getPrice(), equalTo(product.getPrice()));
@@ -61,7 +61,7 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
 
         assertThat(vendingMachine.getPrice(productId), equalTo(product.getPrice()));
     }
@@ -71,14 +71,14 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
         final ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        doReturn(product).when(productStore).saveProduct(productCaptor.capture());
+        doReturn(product).when(productStorage).saveProduct(productCaptor.capture());
 
         vendingMachine.setPrice(productId, 111);
 
         final Product forUpdate = productCaptor.getValue();
-        verify(productStore).saveProduct(forUpdate);
+        verify(productStorage).saveProduct(forUpdate);
         assertThat(forUpdate.getName(), equalTo(product.getName()));
         assertThat(forUpdate.getId(), equalTo(product.getId()));
         assertThat(forUpdate.getPrice(), equalTo(111));
@@ -90,7 +90,7 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
 
         assertThat(vendingMachine.getName(productId), equalTo(product.getName()));
     }
@@ -100,14 +100,14 @@ public class VendingMachineTest {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
-        when(productStore.getProduct(productId)).thenReturn(product);
+        when(productStorage.getProduct(productId)).thenReturn(product);
         final ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        doReturn(product).when(productStore).saveProduct(productCaptor.capture());
+        doReturn(product).when(productStorage).saveProduct(productCaptor.capture());
 
         vendingMachine.setName(productId, "UpdatedName");
 
         final Product forUpdate = productCaptor.getValue();
-        verify(productStore).saveProduct(forUpdate);
+        verify(productStorage).saveProduct(forUpdate);
         assertThat(forUpdate.getName(), equalTo("UpdatedName"));
         assertThat(forUpdate.getId(), equalTo(product.getId()));
         assertThat(forUpdate.getPrice(), equalTo(product.getPrice()));

@@ -1,7 +1,7 @@
-package com.vsocolov.vendingmachine.productstore.impl;
+package com.vsocolov.vendingmachine.productstorage.impl;
 
-import com.vsocolov.vendingmachine.productstore.ProductStore;
-import com.vsocolov.vendingmachine.productstore.data.Product;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
+import com.vsocolov.vendingmachine.productstorage.data.Product;
 import com.vsocolov.vendingmachine.enums.ExceptionType;
 import com.vsocolov.vendingmachine.exceptions.VendingMachineException;
 import org.junit.Before;
@@ -13,21 +13,21 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 
-public class ArrayProductStoreTest {
+public class ArrayProductStorageTest {
 
-    private ProductStore productStore;
+    private ProductStorage productStorage;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() {
-        productStore = new ArrayProductStore(2);
+        productStorage = new ArrayProductStorage(2);
     }
 
     @Test
     public void getProduct_should_return_product_if_productid_is_valid() {
-        final Product product = productStore.getProduct(0);
+        final Product product = productStorage.getProduct(0);
 
         assertThat(product.getId(), equalTo(0));
         assertThat(product.getName(), is(not(emptyString())));
@@ -38,16 +38,16 @@ public class ArrayProductStoreTest {
         expectedException.expect(VendingMachineException.class);
         expectedException.expectMessage(equalTo(ExceptionType.INVALID_PRODUCT_SLOT.getMessage()));
 
-        productStore.getProduct(111);
+        productStorage.getProduct(111);
     }
 
     @Test
     public void saveProduct_should_update_product_with_new_product_fields() {
         //update product with id = 1
-        final Product product = productStore.saveProduct(new Product(1, "Oranges", 150, 3));
+        final Product product = productStorage.saveProduct(new Product(1, "Oranges", 150, 3));
 
         //get product with id = 1
-        final Product updatedProduct = productStore.getProduct(1);
+        final Product updatedProduct = productStorage.getProduct(1);
 
         assertThat(product, sameInstance(updatedProduct));
     }
@@ -57,7 +57,7 @@ public class ArrayProductStoreTest {
         expectedException.expect(VendingMachineException.class);
         expectedException.expectMessage(equalTo(ExceptionType.INVALID_PRODUCT_SLOT.getMessage()));
 
-        productStore.saveProduct(new Product(100));
+        productStorage.saveProduct(new Product(100));
     }
 
 }

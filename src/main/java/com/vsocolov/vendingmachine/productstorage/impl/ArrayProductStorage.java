@@ -1,20 +1,20 @@
-package com.vsocolov.vendingmachine.productstore.impl;
+package com.vsocolov.vendingmachine.productstorage.impl;
 
 import com.vsocolov.vendingmachine.exceptions.VendingMachineException;
-import com.vsocolov.vendingmachine.productstore.ProductStore;
-import com.vsocolov.vendingmachine.productstore.data.Product;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
+import com.vsocolov.vendingmachine.productstorage.data.Product;
 
 import java.util.stream.IntStream;
 
 import static com.vsocolov.vendingmachine.enums.ExceptionType.INVALID_PRODUCT_SLOT;
 
-public class ArrayProductStore implements ProductStore {
+public class ArrayProductStorage implements ProductStorage {
 
     private final Product[] datasource;
 
     private final int capacity;
 
-    public ArrayProductStore(final int capacity) {
+    public ArrayProductStorage(final int capacity) {
         this.capacity = capacity;
         datasource = fillDataSource(capacity);
     }

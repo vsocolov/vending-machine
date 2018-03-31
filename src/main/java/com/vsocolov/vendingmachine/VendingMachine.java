@@ -1,11 +1,9 @@
 package com.vsocolov.vendingmachine;
 
-import com.vsocolov.vendingmachine.api.VendingMachineAdministration;
-import com.vsocolov.vendingmachine.api.VendingMachineConsumer;
 import com.vsocolov.vendingmachine.enums.Coin;
-import com.vsocolov.vendingmachine.productstore.ProductStore;
-import com.vsocolov.vendingmachine.productstore.data.Product;
-import com.vsocolov.vendingmachine.productstore.impl.ArrayProductStore;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
+import com.vsocolov.vendingmachine.productstorage.data.Product;
+import com.vsocolov.vendingmachine.productstorage.impl.ArrayProductStorage;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -15,53 +13,53 @@ public final class VendingMachine implements VendingMachineAdministration, Vendi
 
     private final int capacity;
     private final List<Coin> coins;
-    private final ProductStore productStore;
+    private final ProductStorage productStorage;
 
     public VendingMachine(final int capacity, final List<Coin> coins) {
         this.capacity = capacity;
         this.coins = new ArrayList<>(coins);
-        this.productStore = new ArrayProductStore(capacity);
+        this.productStorage = new ArrayProductStorage(capacity);
     }
 
     @Override
     public int getQuantity(final int slot) {
-        return productStore.getProduct(slot).getQuantity();
+        return productStorage.getProduct(slot).getQuantity();
     }
 
     @Override
     public void setQuantity(final int slot, final int quantity) {
-        synchronized (productStore) {
-            final Product product = productStore.getProduct(slot);
+        synchronized (productStorage) {
+            final Product product = productStorage.getProduct(slot);
             final Product forUpdate = new Product(slot, product.getName(), product.getPrice(), quantity);
-            productStore.saveProduct(forUpdate);
+            productStorage.saveProduct(forUpdate);
         }
     }
 
     @Override
     public int getPrice(final int slot) {
-        return productStore.getProduct(slot).getPrice();
+        return productStorage.getProduct(slot).getPrice();
     }
 
     @Override
     public void setPrice(final int slot, final int price) {
-        synchronized (productStore) {
-            final Product product = productStore.getProduct(slot);
+        synchronized (productStorage) {
+            final Product product = productStorage.getProduct(slot);
             final Product forUpdate = new Product(slot, product.getName(), price, product.getQuantity());
-            productStore.saveProduct(forUpdate);
+            productStorage.saveProduct(forUpdate);
         }
     }
 
     @Override
     public String getName(final int slot) {
-        return productStore.getProduct(slot).getName();
+        return productStorage.getProduct(slot).getName();
     }
 
     @Override
     public void setName(final int slot, final String name) {
-        synchronized (productStore) {
-            final Product product = productStore.getProduct(slot);
+        synchronized (productStorage) {
+            final Product product = productStorage.getProduct(slot);
             final Product forUpdate = new Product(slot, name, product.getPrice(), product.getQuantity());
-            productStore.saveProduct(forUpdate);
+            productStorage.saveProduct(forUpdate);
         }
     }
 
