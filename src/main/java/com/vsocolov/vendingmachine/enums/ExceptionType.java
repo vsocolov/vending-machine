@@ -1,7 +1,8 @@
 package com.vsocolov.vendingmachine.enums;
 
 public enum ExceptionType {
-    INVALID_PRODUCT_SLOT("Selected product slot is invalid.");
+    INVALID_PRODUCT_SLOT("Selected product slot is invalid."),
+    UNSUPPORTED_COINS("Vending machine do not support such type of coins.");
 
     private final String message;
 

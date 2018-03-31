@@ -11,12 +11,10 @@ import java.util.List;
 
 public final class VendingMachine implements VendingMachineAdministration, VendingMachineConsumer {
 
-    private final int capacity;
     private final List<Coin> coins;
     private final ProductStorage productStorage;
 
     public VendingMachine(final int capacity, final List<Coin> coins) {
-        this.capacity = capacity;
         this.coins = new ArrayList<>(coins);
         this.productStorage = new ArrayProductStorage(capacity);
     }

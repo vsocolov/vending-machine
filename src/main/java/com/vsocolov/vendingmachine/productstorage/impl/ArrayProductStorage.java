@@ -10,22 +10,22 @@ import static com.vsocolov.vendingmachine.enums.ExceptionType.INVALID_PRODUCT_SL
 
 public class ArrayProductStorage implements ProductStorage {
 
-    private final Product[] datasource;
+    private final Product[] dataStorage;
 
     private final int capacity;
 
     public ArrayProductStorage(final int capacity) {
         this.capacity = capacity;
-        datasource = fillDataSource(capacity);
+        dataStorage = fillDataStorage(capacity);
     }
 
     /**
-     * This method fill datasource with default products
+     * This method fill dataStorage with default products
      *
-     * @param capacity datasource capacity
+     * @param capacity dataStorage capacity
      * @return a filled array with default products
      */
-    private Product[] fillDataSource(final int capacity) {
+    private Product[] fillDataStorage(final int capacity) {
         return IntStream.range(0, capacity)
                 .mapToObj(Product::new)
                 .toArray(Product[]::new);
@@ -35,8 +35,8 @@ public class ArrayProductStorage implements ProductStorage {
     public Product getProduct(int productId) {
         assertProductId(productId);
 
-        synchronized (datasource) {
-            return datasource[productId];
+        synchronized (dataStorage) {
+            return dataStorage[productId];
         }
     }
 
@@ -44,8 +44,8 @@ public class ArrayProductStorage implements ProductStorage {
     public Product saveProduct(final Product product) {
         assertProductId(product.getId());
 
-        synchronized (datasource) {
-            datasource[product.getId()] = product;
+        synchronized (dataStorage) {
+            dataStorage[product.getId()] = product;
         }
 
         return product;
