@@ -2,7 +2,7 @@ package com.vsocolov.vendingmachine;
 
 import com.vsocolov.vendingmachine.coinsstorage.CoinsStorage;
 import com.vsocolov.vendingmachine.productstorage.ProductStorage;
-import com.vsocolov.vendingmachine.productstorage.data.Product;
+import com.vsocolov.vendingmachine.data.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

@@ -1,6 +1,6 @@
 package com.vsocolov.vendingmachine.productstorage;
 
-import com.vsocolov.vendingmachine.productstorage.data.Product;
+import com.vsocolov.vendingmachine.data.Product;
 
 public interface ProductStorage {
 

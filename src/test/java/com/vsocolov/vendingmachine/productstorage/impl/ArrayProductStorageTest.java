@@ -1,7 +1,7 @@
 package com.vsocolov.vendingmachine.productstorage.impl;
 
 import com.vsocolov.vendingmachine.productstorage.ProductStorage;
-import com.vsocolov.vendingmachine.productstorage.data.Product;
+import com.vsocolov.vendingmachine.data.Product;
 import com.vsocolov.vendingmachine.enums.ExceptionType;
 import com.vsocolov.vendingmachine.exceptions.VendingMachineException;
 import org.junit.Before;
