@@ -46,7 +46,7 @@ public class CoinsStorageImpl implements CoinsStorage {
     }
 
     /**
-     * This method is not thread safe, because supported coins are created on object created and
+     * This method is not thread safe, because supported coins are created on object creation and
      * cannot be modified.
      *
      * @param coin coin which has to be verified

@@ -1,22 +1,23 @@
 package com.vsocolov.vendingmachine;
 
+import com.vsocolov.vendingmachine.coinsstorage.CoinsStorage;
+import com.vsocolov.vendingmachine.coinsstorage.impl.CoinsStorageImpl;
 import com.vsocolov.vendingmachine.enums.Coin;
 import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 import com.vsocolov.vendingmachine.productstorage.data.Product;
 import com.vsocolov.vendingmachine.productstorage.impl.ArrayProductStorage;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class VendingMachine implements VendingMachineAdministration, VendingMachineConsumer {
 
-    private final List<Coin> coins;
     private final ProductStorage productStorage;
 
+    private final CoinsStorage coinsStorage;
+
     public VendingMachine(final int capacity, final List<Coin> coins) {
-        this.coins = new ArrayList<>(coins);
         this.productStorage = new ArrayProductStorage(capacity);
+        this.coinsStorage = new CoinsStorageImpl(coins);
     }
 
     @Override
@@ -63,11 +64,11 @@ public final class VendingMachine implements VendingMachineAdministration, Vendi
 
     @Override
     public int getCoinAmount(final Coin coin) {
-        throw new NotImplementedException();
+        return coinsStorage.getCoinAmount(coin);
     }
 
     @Override
     public void setCoinAmount(final Coin coin, final int amount) {
-        throw new NotImplementedException();
+        coinsStorage.setCoinAmount(coin, amount);
     }
 }

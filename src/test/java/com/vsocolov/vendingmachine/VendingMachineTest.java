@@ -1,5 +1,6 @@
 package com.vsocolov.vendingmachine;
 
+import com.vsocolov.vendingmachine.coinsstorage.CoinsStorage;
 import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 import com.vsocolov.vendingmachine.productstorage.data.Product;
 import org.junit.Before;
@@ -20,15 +21,19 @@ public class VendingMachineTest {
 
     private ProductStorage productStorage;
 
+    private CoinsStorage coinsStorage;
+
     @Before
     public void setUp() {
         this.vendingMachine = new VendingMachine(5, Arrays.asList(ONE_PENNY, FIVE_PENCE, TEN_PENCE));
         this.productStorage = mock(ProductStorage.class);
+        this.coinsStorage = mock(CoinsStorage.class);
         ReflectionTestUtils.setField(vendingMachine, "productStorage", productStorage);
+        ReflectionTestUtils.setField(vendingMachine, "coinsStorage", coinsStorage);
     }
 
     @Test
-    public void getQuantity_should_call_datasource_and_return_quantity() {
+    public void getQuantity_should_call_datastorage_and_return_quantity() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -38,7 +43,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void setQuantity_should_call_datastore_and_create_new_product_with_new_quantity() {
+    public void setQuantity_should_call_datastorage_and_create_new_product_with_new_quantity() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -57,7 +62,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void getPrice_should_call_datasource_and_return_price() {
+    public void getPrice_should_call_datastorage_and_return_price() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -67,7 +72,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void setPrice_should_call_datastore_and_create_new_product_with_new_price() {
+    public void setPrice_should_call_datastorage_and_create_new_product_with_new_price() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -86,7 +91,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void getName_should_call_datasource_and_return_name() {
+    public void getName_should_call_datastorage_and_return_name() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -96,7 +101,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void setName_should_call_datastore_and_create_new_product_with_new_name() {
+    public void setName_should_call_datastorage_and_create_new_product_with_new_name() {
         final int productId = 1;
         final Product product = new Product(productId, "dummy", 100, 10);
 
@@ -112,5 +117,21 @@ public class VendingMachineTest {
         assertThat(forUpdate.getId(), equalTo(product.getId()));
         assertThat(forUpdate.getPrice(), equalTo(product.getPrice()));
         assertThat(forUpdate.getQuantity(), equalTo(product.getQuantity()));
+    }
+
+    @Test
+    public void getCoinAmount_should_call_coinsstorage_and_return_amount() {
+        when(coinsStorage.getCoinAmount(FIVE_PENCE)).thenReturn(66);
+
+        int coinAmount = vendingMachine.getCoinAmount(FIVE_PENCE);
+
+        assertThat(coinAmount, equalTo(66));
+    }
+
+    @Test
+    public void setCoinAmount_should_call_coinsstorage_and_set_new_amount() {
+        vendingMachine.setCoinAmount(FIVE_PENCE, 66);
+
+        verify(coinsStorage).setCoinAmount(FIVE_PENCE, 66);
     }
 }
