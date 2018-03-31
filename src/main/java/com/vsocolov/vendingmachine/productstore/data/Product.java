@@ -1,10 +1,8 @@
-package com.vsocolov.vendingmachine.datastore.data;
+package com.vsocolov.vendingmachine.productstore.data;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.Serializable;
-
-public class Product implements Serializable {
+public class Product {
     private static final int DEFAULT_PRODUCT_NAME_SIZE = 5;
     private static final int DEFAULT_PRICE = 100;
     private static final int DEFAULT_QUANTITY = 0;

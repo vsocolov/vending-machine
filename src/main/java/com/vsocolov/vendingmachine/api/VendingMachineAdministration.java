@@ -12,6 +12,10 @@ public interface VendingMachineAdministration {
 
     void setPrice(int slot, int price);
 
+    String getName(int slot);
+
+    void setName(int slot, String name);
+
     int getCoinAmount(Coin coin);
 
     void setCoinAmount(Coin coin, int amount);
