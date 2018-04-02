@@ -35,6 +35,24 @@ public class CoinsStorageImpl implements CoinsStorage {
         }
     }
 
+    @Override
+    public void decreaseCoinAmount(final Coin coin, final int decreaseAmount) {
+        assertCoin(coin);
+        synchronized (coinsStorage) {
+            final Integer coinAmount = coinsStorage.get(coin);
+            coinsStorage.put(coin, coinAmount - decreaseAmount);
+        }
+    }
+
+    @Override
+    public void increaseCoinAmount(final Coin coin, final int increasedAmount) {
+        assertCoin(coin);
+        synchronized (coinsStorage) {
+            final Integer coinAmount = coinsStorage.get(coin);
+            coinsStorage.put(coin, coinAmount + increasedAmount);
+        }
+    }
+
     /**
      * This method create a map of supported coins with predefined amount "0".
      *

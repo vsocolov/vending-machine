@@ -1,12 +1,11 @@
 package com.vsocolov.vendingmachine.productstorage.impl;
 
-import com.vsocolov.vendingmachine.exceptions.VendingMachineException;
-import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 import com.vsocolov.vendingmachine.data.Product;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 
 import java.util.stream.IntStream;
 
-import static com.vsocolov.vendingmachine.enums.ExceptionType.INVALID_PRODUCT_SLOT;
+import static com.vsocolov.vendingmachine.helpers.AssertionHelper.assertProductId;
 
 public class ArrayProductStorage implements ProductStorage {
 
@@ -19,6 +18,26 @@ public class ArrayProductStorage implements ProductStorage {
         dataStorage = fillDataStorage(capacity);
     }
 
+    @Override
+    public Product getProduct(int productId) {
+        assertProductId(productId, capacity);
+
+        synchronized (dataStorage) {
+            return dataStorage[productId];
+        }
+    }
+
+    @Override
+    public Product saveProduct(final Product product) {
+        assertProductId(product.getId(), capacity);
+
+        synchronized (dataStorage) {
+            dataStorage[product.getId()] = product;
+        }
+
+        return product;
+    }
+
     /**
      * This method fill dataStorage with default products
      *
@@ -29,30 +48,5 @@ public class ArrayProductStorage implements ProductStorage {
         return IntStream.range(0, capacity)
                 .mapToObj(Product::new)
                 .toArray(Product[]::new);
-    }
-
-    @Override
-    public Product getProduct(int productId) {
-        assertProductId(productId);
-
-        synchronized (dataStorage) {
-            return dataStorage[productId];
-        }
-    }
-
-    @Override
-    public Product saveProduct(final Product product) {
-        assertProductId(product.getId());
-
-        synchronized (dataStorage) {
-            dataStorage[product.getId()] = product;
-        }
-
-        return product;
-    }
-
-    private void assertProductId(final int productId) {
-        if (productId < 0 || productId >= capacity)
-            throw new VendingMachineException(INVALID_PRODUCT_SLOT);
     }
 }

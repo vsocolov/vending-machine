@@ -18,7 +18,7 @@ public class ArrayProductStorageTest {
     private ProductStorage productStorage;
 
     @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    public final ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -26,7 +26,7 @@ public class ArrayProductStorageTest {
     }
 
     @Test
-    public void getProduct_should_return_product_if_productid_is_valid() {
+    public void getProduct_should_return_product_if_productId_is_valid() {
         final Product product = productStorage.getProduct(0);
 
         assertThat(product.getId(), equalTo(0));
@@ -34,7 +34,7 @@ public class ArrayProductStorageTest {
     }
 
     @Test
-    public void getProduct_should_throw_exception_if_prouctid_is_invalid() {
+    public void getProduct_should_throw_exception_if_prouctId_is_invalid() {
         expectedException.expect(VendingMachineException.class);
         expectedException.expectMessage(equalTo(ExceptionType.INVALID_PRODUCT_SLOT.getMessage()));
 

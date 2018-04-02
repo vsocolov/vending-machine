@@ -19,7 +19,7 @@ public class CoinsStorageImplTest {
     private CoinsStorage coinsStorage;
 
     @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    public final ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -52,5 +52,27 @@ public class CoinsStorageImplTest {
         expectedException.expect(VendingMachineException.class);
         expectedException.expectMessage(equalTo(ExceptionType.UNSUPPORTED_COINS.getMessage()));
         coinsStorage.setCoinAmount(TWO_POUNDS, 100);
+    }
+
+    @Test
+    public void decreaseCoinAmount_should_decrease_initial_coin_quantity_by_selected_amount() {
+        // set initial coin quantity
+        coinsStorage.setCoinAmount(FIVE_PENCE, 10);
+
+        //method under test
+        coinsStorage.decreaseCoinAmount(FIVE_PENCE, 2);
+
+        assertThat(coinsStorage.getCoinAmount(FIVE_PENCE), equalTo(8));
+    }
+
+    @Test
+    public void increaseCoinAmount_should_decrease_initial_coin_quantity_by_selected_amount() {
+        // set initial coin quantity
+        coinsStorage.setCoinAmount(FIVE_PENCE, 10);
+
+        //method under test
+        coinsStorage.increaseCoinAmount(FIVE_PENCE, 2);
+
+        assertThat(coinsStorage.getCoinAmount(FIVE_PENCE), equalTo(12));
     }
 }

@@ -1,18 +1,28 @@
 package com.vsocolov.vendingmachine;
 
 import com.vsocolov.vendingmachine.coinsstorage.CoinsStorage;
-import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 import com.vsocolov.vendingmachine.data.Product;
+import com.vsocolov.vendingmachine.enums.Coin;
+import com.vsocolov.vendingmachine.enums.ExceptionType;
+import com.vsocolov.vendingmachine.exceptions.VendingMachineException;
+import com.vsocolov.vendingmachine.productstorage.ProductStorage;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.vsocolov.vendingmachine.enums.Coin.*;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 public class VendingMachineTest {
@@ -23,11 +33,14 @@ public class VendingMachineTest {
 
     private CoinsStorage coinsStorage;
 
+    @Rule
+    public final ExpectedException expectedException = ExpectedException.none();
+
     @Before
     public void setUp() {
-        this.vendingMachine = new VendingMachine(5, Arrays.asList(ONE_PENNY, FIVE_PENCE, TEN_PENCE));
-        this.productStorage = mock(ProductStorage.class);
-        this.coinsStorage = mock(CoinsStorage.class);
+        vendingMachine = new VendingMachine(5, Arrays.asList(ONE_PENNY, FIVE_PENCE, TEN_PENCE));
+        productStorage = mock(ProductStorage.class);
+        coinsStorage = mock(CoinsStorage.class);
         ReflectionTestUtils.setField(vendingMachine, "productStorage", productStorage);
         ReflectionTestUtils.setField(vendingMachine, "coinsStorage", coinsStorage);
     }
@@ -133,5 +146,88 @@ public class VendingMachineTest {
         vendingMachine.setCoinAmount(FIVE_PENCE, 66);
 
         verify(coinsStorage).setCoinAmount(FIVE_PENCE, 66);
+    }
+
+    @Test
+    public void buyProduct_should_calculate_changes_decrease_product_quantity_and_coin_amount() {
+        final List<Coin> coinsToPay = Arrays.asList(ONE_POUND, FIFTY_PENCE);
+        final int productSlot = 1;
+        final Product product = new Product(productSlot, "KitKat", 134, 1);
+        final ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+
+        when(productStorage.getProduct(productSlot)).thenReturn(product);
+        when(coinsStorage.getCoinAmount(any(Coin.class))).thenReturn(10);
+        doReturn(product).when(productStorage).saveProduct(productCaptor.capture());
+
+        final List<Coin> coinsChange = vendingMachine.buyProduct(productSlot, coinsToPay);
+
+        assertThat(coinsChange, hasSize(3));
+        assertThat(coinsChange, hasItems(TEN_PENCE, FIVE_PENCE, ONE_PENNY));
+        assertThat(productCaptor.getValue().getQuantity(), equalTo(product.getQuantity() - 1));
+        verify(productStorage).saveProduct(any(Product.class));
+        verify(coinsStorage, times(2)).increaseCoinAmount(any(Coin.class), eq(1));
+        verify(coinsStorage, times(3)).decreaseCoinAmount(any(Coin.class), eq(1));
+    }
+
+    @Test
+    public void buyProduct_should_throw_exception_if_product_is_not_available() {
+        final List<Coin> coinsToPay = Arrays.asList(ONE_POUND, FIFTY_PENCE);
+        final int productSlot = 1;
+        final Product product = new Product(productSlot, "KitKat", 134, 0);
+
+        when(productStorage.getProduct(productSlot)).thenReturn(product);
+
+        expectedException.expect(VendingMachineException.class);
+        expectedException.expectMessage(equalTo(ExceptionType.PRODUCT_NOT_AVAILABLE.getMessage()));
+
+        vendingMachine.buyProduct(productSlot, coinsToPay);
+    }
+
+    @Test
+    public void buyProduct_should_return_empty_changes_if_paid_amount_is_the_same_as_product_amount() {
+        final List<Coin> coinsToPay = Arrays.asList(ONE_POUND, FIFTY_PENCE);
+        final int productSlot = 1;
+        final Product product = new Product(productSlot, "KitKat", 150, 1);
+        final ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+
+        when(productStorage.getProduct(productSlot)).thenReturn(product);
+        when(coinsStorage.getCoinAmount(any(Coin.class))).thenReturn(10);
+        doReturn(product).when(productStorage).saveProduct(productCaptor.capture());
+
+        final List<Coin> coinsChange = vendingMachine.buyProduct(productSlot, coinsToPay);
+
+        assertThat(coinsChange, is(empty()));
+        assertThat(productCaptor.getValue().getQuantity(), equalTo(product.getQuantity() - 1));
+        verify(productStorage).saveProduct(any(Product.class));
+        verify(coinsStorage, times(2)).increaseCoinAmount(any(Coin.class), eq(1));
+        verify(coinsStorage, never()).decreaseCoinAmount(any(Coin.class), eq(1));
+    }
+
+    @Test
+    public void buyProduct_should_throw_exception_if_there_are_not_enough_money_to_buy_product() {
+        final List<Coin> coinsToPay = Collections.singletonList(ONE_POUND);
+        final int productSlot = 1;
+        final Product product = new Product(productSlot, "KitKat", 134, 1);
+
+        when(productStorage.getProduct(productSlot)).thenReturn(product);
+
+        expectedException.expect(VendingMachineException.class);
+        expectedException.expectMessage(equalTo(ExceptionType.NOT_ENOUGH_MONEY.getMessage()));
+
+        vendingMachine.buyProduct(productSlot, coinsToPay);
+    }
+
+    @Test
+    public void buyProduct_should_throw_exception_if_there_are_not_enough_change_to_give_customer() {
+        final List<Coin> coinsToPay = Arrays.asList(ONE_POUND, FIFTY_PENCE);
+        final int productSlot = 1;
+        final Product product = new Product(productSlot, "KitKat", 134, 1);
+
+        when(productStorage.getProduct(productSlot)).thenReturn(product);
+
+        expectedException.expect(VendingMachineException.class);
+        expectedException.expectMessage(equalTo(ExceptionType.NOT_ENOUGH_CHANGE.getMessage()));
+
+        vendingMachine.buyProduct(productSlot, coinsToPay);
     }
 }

@@ -7,4 +7,8 @@ public interface CoinsStorage {
     int getCoinAmount(Coin coin);
 
     void setCoinAmount(Coin coin, int amount);
+
+    void decreaseCoinAmount(Coin coin, int decreaseAmount);
+
+    void increaseCoinAmount(Coin coin, int increasedAmount);
 }

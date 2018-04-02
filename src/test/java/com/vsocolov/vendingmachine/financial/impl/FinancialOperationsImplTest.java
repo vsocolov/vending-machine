@@ -17,7 +17,7 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 
 public class FinancialOperationsImplTest {
 
-    private FinancialOperations financialOperations = new FinancialOperationsImpl();
+    private final FinancialOperations financialOperations = new FinancialOperationsImpl();
 
     @Test
     public void calculateChanges_should_return_a_list_of_possible_coin_computations() {
